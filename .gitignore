@@ -1,0 +1,8 @@
+# TypeScript
+node_modules
+
+# Python
+__pycache__
+
+# Other
+.DS_Store
