@@ -1,25 +1,34 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net"
+	"math/rand"
+	"time"
+	"fmt"
 
 	"google.golang.org/grpc"
 	pb "dtu.com/grpc/golang/special_course/protos"
 )
 
-// server is used to implement helloworld.GreeterServer.
 type server struct {
 	pb.UnimplementedGreeterServer
 }
 
-// SayHello implements helloworld.GreeterServer
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	n := in.GetName()
-	sn := in.GetSurname()
-	log.Printf("Received: %v, %v", n, sn)
-	return &pb.HelloReply{Message: "Hello " + n + " | " + sn}, nil
+func (s *server) Query(in *pb.Request, stream pb.Greeter_QueryServer) error {
+	rs := time.Now().UnixNano()
+	r := rand.New(rand.NewSource(rs))
+
+	for i := 0; i < 10; i++ {
+		v := r.Int63()
+		log.Printf("Val: %v", v)
+		if err := stream.Send(&pb.Reply{Message: fmt.Sprintf("%v", v)}); err != nil {
+			return err
+		}
+		time.Sleep(time.Second)
+	}
+
+	return nil
 }
 
 func main() {

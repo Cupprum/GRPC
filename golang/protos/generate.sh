@@ -1,7 +1,7 @@
 #!/bin/bash
 
 proto_dir='../../protos'
-proto_file='helloworld.proto'
+proto_file='special_course.proto'
 out_dir='.'
 
 protoc \
