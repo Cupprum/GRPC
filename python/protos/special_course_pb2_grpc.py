@@ -5,7 +5,7 @@ import grpc
 import special_course_pb2 as special__course__pb2
 
 
-class GreeterStub(object):
+class ServerStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -14,42 +14,58 @@ class GreeterStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.query = channel.unary_stream(
-                '/special_course.Greeter/query',
+        self.UnaryQuery = channel.unary_unary(
+                '/special_course.Server/UnaryQuery',
+                request_serializer=special__course__pb2.Request.SerializeToString,
+                response_deserializer=special__course__pb2.Reply.FromString,
+                )
+        self.ServerStreaming = channel.unary_stream(
+                '/special_course.Server/ServerStreaming',
                 request_serializer=special__course__pb2.Request.SerializeToString,
                 response_deserializer=special__course__pb2.Reply.FromString,
                 )
 
 
-class GreeterServicer(object):
+class ServerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def query(self, request, context):
+    def UnaryQuery(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ServerStreaming(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_GreeterServicer_to_server(servicer, server):
+def add_ServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'query': grpc.unary_stream_rpc_method_handler(
-                    servicer.query,
+            'UnaryQuery': grpc.unary_unary_rpc_method_handler(
+                    servicer.UnaryQuery,
+                    request_deserializer=special__course__pb2.Request.FromString,
+                    response_serializer=special__course__pb2.Reply.SerializeToString,
+            ),
+            'ServerStreaming': grpc.unary_stream_rpc_method_handler(
+                    servicer.ServerStreaming,
                     request_deserializer=special__course__pb2.Request.FromString,
                     response_serializer=special__course__pb2.Reply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'special_course.Greeter', rpc_method_handlers)
+            'special_course.Server', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class Greeter(object):
+class Server(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def query(request,
+    def UnaryQuery(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,7 +75,24 @@ class Greeter(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/special_course.Greeter/query',
+        return grpc.experimental.unary_unary(request, target, '/special_course.Server/UnaryQuery',
+            special__course__pb2.Request.SerializeToString,
+            special__course__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ServerStreaming(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/special_course.Server/ServerStreaming',
             special__course__pb2.Request.SerializeToString,
             special__course__pb2.Reply.FromString,
             options, channel_credentials,

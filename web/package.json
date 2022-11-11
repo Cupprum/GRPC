@@ -9,5 +9,8 @@
   "dependencies": {
     "google-protobuf": "^3.21.2",
     "grpc-web": "^1.4.2"
+  },
+  "scripts": {
+    "build": "npx webpack && open ./dist/index.html"
   }
 }

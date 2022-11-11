@@ -14,11 +14,19 @@
   <label>Last name:</label>
   <input type="text" id="lastName"><br><br>
 
-  <button id="grpcTrigger">
+  <button id="grpcTriggerUnaryQuery">
     Click me
   </button>
 
-  <p id="grpcResponse"></p>
+  <p id="grpcResponseUnaryQuery"></p>
+
+  <h3>Stream</h3>
+  <button id="grpcTriggerStreaming">
+    Click me - Stream
+  </button>
+  <ul id="grpcResponseStreaming">
+    <li>Responses</li>
+  </ul>
 
   <script src="bundle.js"></script>
 </body>

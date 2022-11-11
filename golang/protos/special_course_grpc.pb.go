@@ -18,27 +18,37 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// GreeterClient is the client API for Greeter service.
+// ServerClient is the client API for Server service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type GreeterClient interface {
-	Query(ctx context.Context, in *Request, opts ...grpc.CallOption) (Greeter_QueryClient, error)
+type ServerClient interface {
+	UnaryQuery(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
+	ServerStreaming(ctx context.Context, in *Request, opts ...grpc.CallOption) (Server_ServerStreamingClient, error)
 }
 
-type greeterClient struct {
+type serverClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewGreeterClient(cc grpc.ClientConnInterface) GreeterClient {
-	return &greeterClient{cc}
+func NewServerClient(cc grpc.ClientConnInterface) ServerClient {
+	return &serverClient{cc}
 }
 
-func (c *greeterClient) Query(ctx context.Context, in *Request, opts ...grpc.CallOption) (Greeter_QueryClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Greeter_ServiceDesc.Streams[0], "/special_course.Greeter/query", opts...)
+func (c *serverClient) UnaryQuery(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
+	out := new(Reply)
+	err := c.cc.Invoke(ctx, "/special_course.Server/UnaryQuery", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &greeterQueryClient{stream}
+	return out, nil
+}
+
+func (c *serverClient) ServerStreaming(ctx context.Context, in *Request, opts ...grpc.CallOption) (Server_ServerStreamingClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Server_ServiceDesc.Streams[0], "/special_course.Server/ServerStreaming", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &serverServerStreamingClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -48,16 +58,16 @@ func (c *greeterClient) Query(ctx context.Context, in *Request, opts ...grpc.Cal
 	return x, nil
 }
 
-type Greeter_QueryClient interface {
+type Server_ServerStreamingClient interface {
 	Recv() (*Reply, error)
 	grpc.ClientStream
 }
 
-type greeterQueryClient struct {
+type serverServerStreamingClient struct {
 	grpc.ClientStream
 }
 
-func (x *greeterQueryClient) Recv() (*Reply, error) {
+func (x *serverServerStreamingClient) Recv() (*Reply, error) {
 	m := new(Reply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -65,66 +75,93 @@ func (x *greeterQueryClient) Recv() (*Reply, error) {
 	return m, nil
 }
 
-// GreeterServer is the server API for Greeter service.
-// All implementations must embed UnimplementedGreeterServer
+// ServerServer is the server API for Server service.
+// All implementations must embed UnimplementedServerServer
 // for forward compatibility
-type GreeterServer interface {
-	Query(*Request, Greeter_QueryServer) error
-	mustEmbedUnimplementedGreeterServer()
+type ServerServer interface {
+	UnaryQuery(context.Context, *Request) (*Reply, error)
+	ServerStreaming(*Request, Server_ServerStreamingServer) error
+	mustEmbedUnimplementedServerServer()
 }
 
-// UnimplementedGreeterServer must be embedded to have forward compatible implementations.
-type UnimplementedGreeterServer struct {
+// UnimplementedServerServer must be embedded to have forward compatible implementations.
+type UnimplementedServerServer struct {
 }
 
-func (UnimplementedGreeterServer) Query(*Request, Greeter_QueryServer) error {
-	return status.Errorf(codes.Unimplemented, "method Query not implemented")
+func (UnimplementedServerServer) UnaryQuery(context.Context, *Request) (*Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnaryQuery not implemented")
 }
-func (UnimplementedGreeterServer) mustEmbedUnimplementedGreeterServer() {}
+func (UnimplementedServerServer) ServerStreaming(*Request, Server_ServerStreamingServer) error {
+	return status.Errorf(codes.Unimplemented, "method ServerStreaming not implemented")
+}
+func (UnimplementedServerServer) mustEmbedUnimplementedServerServer() {}
 
-// UnsafeGreeterServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to GreeterServer will
+// UnsafeServerServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ServerServer will
 // result in compilation errors.
-type UnsafeGreeterServer interface {
-	mustEmbedUnimplementedGreeterServer()
+type UnsafeServerServer interface {
+	mustEmbedUnimplementedServerServer()
 }
 
-func RegisterGreeterServer(s grpc.ServiceRegistrar, srv GreeterServer) {
-	s.RegisterService(&Greeter_ServiceDesc, srv)
+func RegisterServerServer(s grpc.ServiceRegistrar, srv ServerServer) {
+	s.RegisterService(&Server_ServiceDesc, srv)
 }
 
-func _Greeter_Query_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Server_UnaryQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServerServer).UnaryQuery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/special_course.Server/UnaryQuery",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServerServer).UnaryQuery(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Server_ServerStreaming_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Request)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(GreeterServer).Query(m, &greeterQueryServer{stream})
+	return srv.(ServerServer).ServerStreaming(m, &serverServerStreamingServer{stream})
 }
 
-type Greeter_QueryServer interface {
+type Server_ServerStreamingServer interface {
 	Send(*Reply) error
 	grpc.ServerStream
 }
 
-type greeterQueryServer struct {
+type serverServerStreamingServer struct {
 	grpc.ServerStream
 }
 
-func (x *greeterQueryServer) Send(m *Reply) error {
+func (x *serverServerStreamingServer) Send(m *Reply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-// Greeter_ServiceDesc is the grpc.ServiceDesc for Greeter service.
+// Server_ServiceDesc is the grpc.ServiceDesc for Server service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Greeter_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "special_course.Greeter",
-	HandlerType: (*GreeterServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+var Server_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "special_course.Server",
+	HandlerType: (*ServerServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "UnaryQuery",
+			Handler:    _Server_UnaryQuery_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "query",
-			Handler:       _Greeter_Query_Handler,
+			StreamName:    "ServerStreaming",
+			Handler:       _Server_ServerStreaming_Handler,
 			ServerStreams: true,
 		},
 	},

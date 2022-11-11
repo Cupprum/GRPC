@@ -1,33 +1,46 @@
 import * as grpcWeb from 'grpc-web';
-import { GreeterClient } from './protos/HelloworldServiceClientPb';
-import { HelloRequest, HelloReply } from './protos/helloworld_pb';
+import { ServerClient } from './protos/Special_courseServiceClientPb';
+import { Request, Reply } from './protos/special_course_pb';
 
 
-const grpcTrigger = document.getElementById("grpcTrigger");
-let grpcResponse = document.getElementById("grpcResponse");
+const grpcTriggerUnaryQuery = document.getElementById("grpcTriggerUnaryQuery");
+let grpcResponseUnaryQuery = document.getElementById("grpcResponseUnaryQuery");
 
+const grpcTriggerServerStreaming = document.getElementById("grpcTriggerStreaming");
+let grpcResponseServerStreaming = document.getElementById("grpcResponseStreaming");
 
-let firstName = document.getElementById("firstName") as HTMLInputElement;
-let lastName = document.getElementById("lastName") as HTMLInputElement;
+const server = new ServerClient('http://localhost:8080', null, null);
 
+function triggerUnaryQuery() {
+    let firstName = document.getElementById("firstName") as HTMLInputElement;
+    let lastName = document.getElementById("lastName") as HTMLInputElement;
+    firstName.value
 
-const echoService = new GreeterClient('http://localhost:8080', null, null);
+    const request = new Request();
+    request.setMessage(firstName.value);
 
-
-function printSomeShit() {
-    const request = new HelloRequest();
-    request.setName(firstName.value);
-    request.setSurname(lastName.value);
-
-    echoService.sayHello(request, { 'custom-header-1': 'value1' },
-        (err: grpcWeb.RpcError, response: HelloReply) => {
+    server.unaryQuery(request, {},
+        (err: grpcWeb.RpcError, response: Reply) => {
             if (err) {
-                console.log(`Exception\nCode: ${err.code}\nMessage: ${err.metadata}`)
+                console.log(`Exception\nCode: ${err.code}\nMessage: ${err.metadata}`);
             }
 
-            grpcResponse.innerText = response.getMessage();
+            grpcResponseUnaryQuery.innerText = response.getMessage();
         }
     );
 }
 
-grpcTrigger.addEventListener("click", printSomeShit);
+function triggerServerStreaming() {
+    const request = new Request();
+    request.setMessage("");
+
+    let stream = server.serverStreaming(request, {});
+    stream.on('data', function (reply: Reply) {
+        let li = document.createElement('li');
+        li.appendChild(document.createTextNode(reply.getMessage()));
+        grpcResponseServerStreaming.appendChild(li);
+    });
+}
+
+grpcTriggerUnaryQuery.addEventListener("click", triggerUnaryQuery);
+grpcTriggerServerStreaming.addEventListener("click", triggerServerStreaming);

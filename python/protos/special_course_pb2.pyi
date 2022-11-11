@@ -11,7 +11,7 @@ class Reply(_message.Message):
     def __init__(self, message: _Optional[str] = ...) -> None: ...
 
 class Request(_message.Message):
-    __slots__ = ["name"]
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    name: str
-    def __init__(self, name: _Optional[str] = ...) -> None: ...
+    __slots__ = ["message"]
+    MESSAGE_FIELD_NUMBER: _ClassVar[int]
+    message: str
+    def __init__(self, message: _Optional[str] = ...) -> None: ...

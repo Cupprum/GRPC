@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14special_course.proto\x12\x0especial_course\"\x17\n\x07Request\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x18\n\x05Reply\x12\x0f\n\x07message\x18\x01 \x01(\t2F\n\x07Greeter\x12;\n\x05query\x12\x17.special_course.Request\x1a\x15.special_course.Reply\"\x00\x30\x01\x42+Z)dtu.com/grpc/golang/special_course/protosb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14special_course.proto\x12\x0especial_course\"\x1a\n\x07Request\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x18\n\x05Reply\x12\x0f\n\x07message\x18\x01 \x01(\t2\x8f\x01\n\x06Server\x12>\n\nUnaryQuery\x12\x17.special_course.Request\x1a\x15.special_course.Reply\"\x00\x12\x45\n\x0fServerStreaming\x12\x17.special_course.Request\x1a\x15.special_course.Reply\"\x00\x30\x01\x42+Z)dtu.com/grpc/golang/special_course/protosb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'special_course_pb2', globals())
@@ -22,9 +22,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'Z)dtu.com/grpc/golang/special_course/protos'
   _REQUEST._serialized_start=40
-  _REQUEST._serialized_end=63
-  _REPLY._serialized_start=65
-  _REPLY._serialized_end=89
-  _GREETER._serialized_start=91
-  _GREETER._serialized_end=161
+  _REQUEST._serialized_end=66
+  _REPLY._serialized_start=68
+  _REPLY._serialized_end=92
+  _SERVER._serialized_start=95
+  _SERVER._serialized_end=238
 # @@protoc_insertion_point(module_scope)

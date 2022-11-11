@@ -1,21 +1,27 @@
 package main
 
 import (
-	"log"
-	"net"
-	"math/rand"
-	"time"
+	"context"
 	"fmt"
+	"log"
+	"math/rand"
+	"net"
+	"time"
 
-	"google.golang.org/grpc"
 	pb "dtu.com/grpc/golang/special_course/protos"
+	"google.golang.org/grpc"
 )
 
 type server struct {
-	pb.UnimplementedGreeterServer
+	pb.UnimplementedServerServer
 }
 
-func (s *server) Query(in *pb.Request, stream pb.Greeter_QueryServer) error {
+func (s *server) UnaryQuery(ctx context.Context, in *pb.Request) (*pb.Reply, error) {
+	m := fmt.Sprintf("Hello: %v", in.GetMessage())
+	return &pb.Reply{Message: m}, nil
+}
+
+func (s *server) ServerStreaming(in *pb.Request, stream pb.Server_ServerStreamingServer) error {
 	rs := time.Now().UnixNano()
 	r := rand.New(rand.NewSource(rs))
 
@@ -37,7 +43,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
+	pb.RegisterServerServer(s, &server{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
