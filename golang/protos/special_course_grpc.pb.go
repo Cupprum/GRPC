@@ -22,8 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServerClient interface {
-	UnaryQuery(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error)
-	ServerStreaming(ctx context.Context, in *Request, opts ...grpc.CallOption) (Server_ServerStreamingClient, error)
+	GetDevices(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Devices, error)
+	GetDetailsOfDevice(ctx context.Context, in *Interface, opts ...grpc.CallOption) (*InterfaceDetails, error)
+	ServerStreaming(ctx context.Context, in *Interface, opts ...grpc.CallOption) (Server_ServerStreamingClient, error)
 }
 
 type serverClient struct {
@@ -34,16 +35,25 @@ func NewServerClient(cc grpc.ClientConnInterface) ServerClient {
 	return &serverClient{cc}
 }
 
-func (c *serverClient) UnaryQuery(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Reply, error) {
-	out := new(Reply)
-	err := c.cc.Invoke(ctx, "/special_course.Server/UnaryQuery", in, out, opts...)
+func (c *serverClient) GetDevices(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Devices, error) {
+	out := new(Devices)
+	err := c.cc.Invoke(ctx, "/special_course.Server/GetDevices", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *serverClient) ServerStreaming(ctx context.Context, in *Request, opts ...grpc.CallOption) (Server_ServerStreamingClient, error) {
+func (c *serverClient) GetDetailsOfDevice(ctx context.Context, in *Interface, opts ...grpc.CallOption) (*InterfaceDetails, error) {
+	out := new(InterfaceDetails)
+	err := c.cc.Invoke(ctx, "/special_course.Server/GetDetailsOfDevice", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serverClient) ServerStreaming(ctx context.Context, in *Interface, opts ...grpc.CallOption) (Server_ServerStreamingClient, error) {
 	stream, err := c.cc.NewStream(ctx, &Server_ServiceDesc.Streams[0], "/special_course.Server/ServerStreaming", opts...)
 	if err != nil {
 		return nil, err
@@ -59,7 +69,7 @@ func (c *serverClient) ServerStreaming(ctx context.Context, in *Request, opts ..
 }
 
 type Server_ServerStreamingClient interface {
-	Recv() (*Reply, error)
+	Recv() (*StreamReply, error)
 	grpc.ClientStream
 }
 
@@ -67,8 +77,8 @@ type serverServerStreamingClient struct {
 	grpc.ClientStream
 }
 
-func (x *serverServerStreamingClient) Recv() (*Reply, error) {
-	m := new(Reply)
+func (x *serverServerStreamingClient) Recv() (*StreamReply, error) {
+	m := new(StreamReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -79,8 +89,9 @@ func (x *serverServerStreamingClient) Recv() (*Reply, error) {
 // All implementations must embed UnimplementedServerServer
 // for forward compatibility
 type ServerServer interface {
-	UnaryQuery(context.Context, *Request) (*Reply, error)
-	ServerStreaming(*Request, Server_ServerStreamingServer) error
+	GetDevices(context.Context, *Empty) (*Devices, error)
+	GetDetailsOfDevice(context.Context, *Interface) (*InterfaceDetails, error)
+	ServerStreaming(*Interface, Server_ServerStreamingServer) error
 	mustEmbedUnimplementedServerServer()
 }
 
@@ -88,10 +99,13 @@ type ServerServer interface {
 type UnimplementedServerServer struct {
 }
 
-func (UnimplementedServerServer) UnaryQuery(context.Context, *Request) (*Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnaryQuery not implemented")
+func (UnimplementedServerServer) GetDevices(context.Context, *Empty) (*Devices, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDevices not implemented")
 }
-func (UnimplementedServerServer) ServerStreaming(*Request, Server_ServerStreamingServer) error {
+func (UnimplementedServerServer) GetDetailsOfDevice(context.Context, *Interface) (*InterfaceDetails, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDetailsOfDevice not implemented")
+}
+func (UnimplementedServerServer) ServerStreaming(*Interface, Server_ServerStreamingServer) error {
 	return status.Errorf(codes.Unimplemented, "method ServerStreaming not implemented")
 }
 func (UnimplementedServerServer) mustEmbedUnimplementedServerServer() {}
@@ -107,26 +121,44 @@ func RegisterServerServer(s grpc.ServiceRegistrar, srv ServerServer) {
 	s.RegisterService(&Server_ServiceDesc, srv)
 }
 
-func _Server_UnaryQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+func _Server_GetDevices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServerServer).UnaryQuery(ctx, in)
+		return srv.(ServerServer).GetDevices(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/special_course.Server/UnaryQuery",
+		FullMethod: "/special_course.Server/GetDevices",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServerServer).UnaryQuery(ctx, req.(*Request))
+		return srv.(ServerServer).GetDevices(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Server_GetDetailsOfDevice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Interface)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServerServer).GetDetailsOfDevice(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/special_course.Server/GetDetailsOfDevice",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServerServer).GetDetailsOfDevice(ctx, req.(*Interface))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Server_ServerStreaming_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(Request)
+	m := new(Interface)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
@@ -134,7 +166,7 @@ func _Server_ServerStreaming_Handler(srv interface{}, stream grpc.ServerStream) 
 }
 
 type Server_ServerStreamingServer interface {
-	Send(*Reply) error
+	Send(*StreamReply) error
 	grpc.ServerStream
 }
 
@@ -142,7 +174,7 @@ type serverServerStreamingServer struct {
 	grpc.ServerStream
 }
 
-func (x *serverServerStreamingServer) Send(m *Reply) error {
+func (x *serverServerStreamingServer) Send(m *StreamReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -154,8 +186,12 @@ var Server_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ServerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UnaryQuery",
-			Handler:    _Server_UnaryQuery_Handler,
+			MethodName: "GetDevices",
+			Handler:    _Server_GetDevices_Handler,
+		},
+		{
+			MethodName: "GetDetailsOfDevice",
+			Handler:    _Server_GetDetailsOfDevice_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

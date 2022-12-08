@@ -35,63 +35,106 @@ export class ServerClient {
     this.options_ = options;
   }
 
-  methodDescriptorUnaryQuery = new grpcWeb.MethodDescriptor(
-    '/special_course.Server/UnaryQuery',
+  methodDescriptorGetDevices = new grpcWeb.MethodDescriptor(
+    '/special_course.Server/GetDevices',
     grpcWeb.MethodType.UNARY,
-    special_course_pb.Request,
-    special_course_pb.Reply,
-    (request: special_course_pb.Request) => {
+    special_course_pb.Empty,
+    special_course_pb.Devices,
+    (request: special_course_pb.Empty) => {
       return request.serializeBinary();
     },
-    special_course_pb.Reply.deserializeBinary
+    special_course_pb.Devices.deserializeBinary
   );
 
-  unaryQuery(
-    request: special_course_pb.Request,
-    metadata: grpcWeb.Metadata | null): Promise<special_course_pb.Reply>;
+  getDevices(
+    request: special_course_pb.Empty,
+    metadata: grpcWeb.Metadata | null): Promise<special_course_pb.Devices>;
 
-  unaryQuery(
-    request: special_course_pb.Request,
+  getDevices(
+    request: special_course_pb.Empty,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
-               response: special_course_pb.Reply) => void): grpcWeb.ClientReadableStream<special_course_pb.Reply>;
+               response: special_course_pb.Devices) => void): grpcWeb.ClientReadableStream<special_course_pb.Devices>;
 
-  unaryQuery(
-    request: special_course_pb.Request,
+  getDevices(
+    request: special_course_pb.Empty,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
-               response: special_course_pb.Reply) => void) {
+               response: special_course_pb.Devices) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-          '/special_course.Server/UnaryQuery',
+          '/special_course.Server/GetDevices',
         request,
         metadata || {},
-        this.methodDescriptorUnaryQuery,
+        this.methodDescriptorGetDevices,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/special_course.Server/UnaryQuery',
+      '/special_course.Server/GetDevices',
     request,
     metadata || {},
-    this.methodDescriptorUnaryQuery);
+    this.methodDescriptorGetDevices);
+  }
+
+  methodDescriptorGetDetailsOfDevice = new grpcWeb.MethodDescriptor(
+    '/special_course.Server/GetDetailsOfDevice',
+    grpcWeb.MethodType.UNARY,
+    special_course_pb.Interface,
+    special_course_pb.InterfaceDetails,
+    (request: special_course_pb.Interface) => {
+      return request.serializeBinary();
+    },
+    special_course_pb.InterfaceDetails.deserializeBinary
+  );
+
+  getDetailsOfDevice(
+    request: special_course_pb.Interface,
+    metadata: grpcWeb.Metadata | null): Promise<special_course_pb.InterfaceDetails>;
+
+  getDetailsOfDevice(
+    request: special_course_pb.Interface,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.RpcError,
+               response: special_course_pb.InterfaceDetails) => void): grpcWeb.ClientReadableStream<special_course_pb.InterfaceDetails>;
+
+  getDetailsOfDevice(
+    request: special_course_pb.Interface,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.RpcError,
+               response: special_course_pb.InterfaceDetails) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/special_course.Server/GetDetailsOfDevice',
+        request,
+        metadata || {},
+        this.methodDescriptorGetDetailsOfDevice,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/special_course.Server/GetDetailsOfDevice',
+    request,
+    metadata || {},
+    this.methodDescriptorGetDetailsOfDevice);
   }
 
   methodDescriptorServerStreaming = new grpcWeb.MethodDescriptor(
     '/special_course.Server/ServerStreaming',
     grpcWeb.MethodType.SERVER_STREAMING,
-    special_course_pb.Request,
-    special_course_pb.Reply,
-    (request: special_course_pb.Request) => {
+    special_course_pb.Interface,
+    special_course_pb.StreamReply,
+    (request: special_course_pb.Interface) => {
       return request.serializeBinary();
     },
-    special_course_pb.Reply.deserializeBinary
+    special_course_pb.StreamReply.deserializeBinary
   );
 
   serverStreaming(
-    request: special_course_pb.Request,
-    metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<special_course_pb.Reply> {
+    request: special_course_pb.Interface,
+    metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<special_course_pb.StreamReply> {
     return this.client_.serverStreaming(
       this.hostname_ +
         '/special_course.Server/ServerStreaming',

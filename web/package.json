@@ -1,6 +1,7 @@
 {
   "name": "web",
   "devDependencies": {
+    "@auth0/auth0-spa-js": "^2.0.0",
     "ts-loader": "^9.4.1",
     "typescript": "^4.8.4",
     "webpack": "^5.74.0",
@@ -11,6 +12,8 @@
     "grpc-web": "^1.4.2"
   },
   "scripts": {
-    "build": "npx webpack && open ./dist/index.html"
+    "serve": "npx webpack && python -m http.server --bind localhost --directory dist 3000",
+    "open": "npx webpack && open dist/index.html",
+    "generate": "cd src/protos && ./generate.sh"
   }
 }

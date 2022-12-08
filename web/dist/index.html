@@ -3,28 +3,40 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Getting Started</title>
+  <title>GRPC</title>
 </head>
 
 <body>
-  <h1>Welcome to GRPC test site</h1>
+  <button id="btn-login">Log in</button>
+  <button id="btn-logout">Log out</button>
 
-  <label>First name:</label>
-  <input type="text" id="firstName"><br><br>
-  <label>Last name:</label>
-  <input type="text" id="lastName"><br><br>
+  <h3>Welcome to GRPC test site</h3>
 
-  <button id="grpcTriggerUnaryQuery">
-    Click me
+  <p>List of interfaces</p>
+  <ul id="ul-devices">
+  </ul>
+
+  <p>Details</p>
+  <select id="select-device">
+  </select>
+  <button id="btn-get-details">
+    Get Details
   </button>
 
-  <p id="grpcResponseUnaryQuery"></p>
+  <p id="details-ip"></p>
+  <p id="details-mask"></p>
+  <p id="details-broadcast"></p>
+  <p id="details-flags"></p>
 
-  <h3>Stream</h3>
-  <button id="grpcTriggerStreaming">
-    Click me - Stream
+  <p>Represent network</p>
+  <button id="btn-stream-start">
+    Start stream
   </button>
-  <ul id="grpcResponseStreaming">
+  <button id="btn-stream-end">
+    End stream
+  </button>
+
+  <ul id="ul-stream-response">
     <li>Responses</li>
   </ul>
 

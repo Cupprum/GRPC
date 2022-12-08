@@ -14,22 +14,33 @@ class ServerStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.UnaryQuery = channel.unary_unary(
-                '/special_course.Server/UnaryQuery',
-                request_serializer=special__course__pb2.Request.SerializeToString,
-                response_deserializer=special__course__pb2.Reply.FromString,
+        self.GetDevices = channel.unary_unary(
+                '/special_course.Server/GetDevices',
+                request_serializer=special__course__pb2.Empty.SerializeToString,
+                response_deserializer=special__course__pb2.Devices.FromString,
+                )
+        self.GetDetailsOfDevice = channel.unary_unary(
+                '/special_course.Server/GetDetailsOfDevice',
+                request_serializer=special__course__pb2.Interface.SerializeToString,
+                response_deserializer=special__course__pb2.InterfaceDetails.FromString,
                 )
         self.ServerStreaming = channel.unary_stream(
                 '/special_course.Server/ServerStreaming',
-                request_serializer=special__course__pb2.Request.SerializeToString,
-                response_deserializer=special__course__pb2.Reply.FromString,
+                request_serializer=special__course__pb2.Interface.SerializeToString,
+                response_deserializer=special__course__pb2.StreamReply.FromString,
                 )
 
 
 class ServerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def UnaryQuery(self, request, context):
+    def GetDevices(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetDetailsOfDevice(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -44,15 +55,20 @@ class ServerServicer(object):
 
 def add_ServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'UnaryQuery': grpc.unary_unary_rpc_method_handler(
-                    servicer.UnaryQuery,
-                    request_deserializer=special__course__pb2.Request.FromString,
-                    response_serializer=special__course__pb2.Reply.SerializeToString,
+            'GetDevices': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetDevices,
+                    request_deserializer=special__course__pb2.Empty.FromString,
+                    response_serializer=special__course__pb2.Devices.SerializeToString,
+            ),
+            'GetDetailsOfDevice': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetDetailsOfDevice,
+                    request_deserializer=special__course__pb2.Interface.FromString,
+                    response_serializer=special__course__pb2.InterfaceDetails.SerializeToString,
             ),
             'ServerStreaming': grpc.unary_stream_rpc_method_handler(
                     servicer.ServerStreaming,
-                    request_deserializer=special__course__pb2.Request.FromString,
-                    response_serializer=special__course__pb2.Reply.SerializeToString,
+                    request_deserializer=special__course__pb2.Interface.FromString,
+                    response_serializer=special__course__pb2.StreamReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -65,7 +81,7 @@ class Server(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def UnaryQuery(request,
+    def GetDevices(request,
             target,
             options=(),
             channel_credentials=None,
@@ -75,9 +91,26 @@ class Server(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/special_course.Server/UnaryQuery',
-            special__course__pb2.Request.SerializeToString,
-            special__course__pb2.Reply.FromString,
+        return grpc.experimental.unary_unary(request, target, '/special_course.Server/GetDevices',
+            special__course__pb2.Empty.SerializeToString,
+            special__course__pb2.Devices.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetDetailsOfDevice(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/special_course.Server/GetDetailsOfDevice',
+            special__course__pb2.Interface.SerializeToString,
+            special__course__pb2.InterfaceDetails.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -93,7 +126,7 @@ class Server(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/special_course.Server/ServerStreaming',
-            special__course__pb2.Request.SerializeToString,
-            special__course__pb2.Reply.FromString,
+            special__course__pb2.Interface.SerializeToString,
+            special__course__pb2.StreamReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

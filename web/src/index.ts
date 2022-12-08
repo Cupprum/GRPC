@@ -1,46 +1,19 @@
-import * as grpcWeb from 'grpc-web';
-import { ServerClient } from './protos/Special_courseServiceClientPb';
-import { Request, Reply } from './protos/special_course_pb';
+import { login, logout, auth0Init } from './auth'
+import { getDetailsOfDevices, triggerServerStreaming, finishServerStreaming } from './grpc'
 
 
-const grpcTriggerUnaryQuery = document.getElementById("grpcTriggerUnaryQuery");
-let grpcResponseUnaryQuery = document.getElementById("grpcResponseUnaryQuery");
+const loginButton = document.getElementById("btn-login") as HTMLButtonElement;
+const logoutButton = document.getElementById("btn-logout") as HTMLButtonElement;
 
-const grpcTriggerServerStreaming = document.getElementById("grpcTriggerStreaming");
-let grpcResponseServerStreaming = document.getElementById("grpcResponseStreaming");
+window.onload = async () => auth0Init()
 
-const server = new ServerClient('http://localhost:8080', null, null);
+loginButton.addEventListener("click", login);
+logoutButton.addEventListener("click", logout);
 
-function triggerUnaryQuery() {
-    let firstName = document.getElementById("firstName") as HTMLInputElement;
-    let lastName = document.getElementById("lastName") as HTMLInputElement;
-    firstName.value
+const grpcGetDetailsOfDevices = document.getElementById("btn-get-details");
+const grpcTriggerServerStreaming = document.getElementById("btn-stream-start");
+const grpcFinishServerStreaming = document.getElementById("btn-stream-end");
 
-    const request = new Request();
-    request.setMessage(firstName.value);
-
-    server.unaryQuery(request, {},
-        (err: grpcWeb.RpcError, response: Reply) => {
-            if (err) {
-                console.log(`Exception\nCode: ${err.code}\nMessage: ${err.metadata}`);
-            }
-
-            grpcResponseUnaryQuery.innerText = response.getMessage();
-        }
-    );
-}
-
-function triggerServerStreaming() {
-    const request = new Request();
-    request.setMessage("");
-
-    let stream = server.serverStreaming(request, {});
-    stream.on('data', function (reply: Reply) {
-        let li = document.createElement('li');
-        li.appendChild(document.createTextNode(reply.getMessage()));
-        grpcResponseServerStreaming.appendChild(li);
-    });
-}
-
-grpcTriggerUnaryQuery.addEventListener("click", triggerUnaryQuery);
+grpcGetDetailsOfDevices.addEventListener("click", getDetailsOfDevices);
 grpcTriggerServerStreaming.addEventListener("click", triggerServerStreaming);
+grpcFinishServerStreaming.addEventListener("click", finishServerStreaming);
