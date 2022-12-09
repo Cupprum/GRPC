@@ -4,40 +4,70 @@
 <head>
   <meta charset="utf-8" />
   <title>GRPC</title>
+  <link href="output.css" rel="stylesheet">
 </head>
 
 <body>
-  <button id="btn-login">Log in</button>
-  <button id="btn-logout">Log out</button>
+  <div class="flex space-x-4 justify-center text-white font-medium text-xs mt-2">
+    <button type="button" class="px-6 py-2.5 bg-blue-600 rounded disabled:opacity-50" id="btn-login">
+      Log in
+    </button>
+    <button type="button" class="px-6 py-2.5 bg-blue-600 rounded disabled:opacity-50" id="btn-logout">
+      Log out
+    </button>
+  </div>
 
-  <h3>Welcome to GRPC test site</h3>
+  <p class="text-center mt-2 text-lg font-bold" id="login-details"></p>
 
-  <p>List of interfaces</p>
-  <ul id="ul-devices">
-  </ul>
+  <h1 class="text-center mt-4 text-2xl font-bold">Welcome to GRPC test site</h1>
 
-  <p>Details</p>
-  <select id="select-device">
-  </select>
-  <button id="btn-get-details">
-    Get Details
-  </button>
+  <div class="text-center mt-2">
+    <p class="text-lg font-medium">List of interfaces</p>
 
-  <p id="details-ip"></p>
-  <p id="details-mask"></p>
-  <p id="details-broadcast"></p>
-  <p id="details-flags"></p>
+    <ul id="ul-devices">
+    </ul>
+  </div>
 
-  <p>Represent network</p>
-  <button id="btn-stream-start">
-    Start stream
-  </button>
-  <button id="btn-stream-end">
-    End stream
-  </button>
+  <p class="text-center mt-4 text-lg font-medium">Details</p>
+
+  <div class="flex justify-center gap-4 mt-2">
+    <select class="form-select appearance-none
+          block
+          w-20
+          px-3
+          py-2.5
+          text-base
+          font-normal
+          border-2
+          rounded" id="select-device">
+    </select>
+
+    <button type="button" class="px-6 py-2.5 bg-blue-600 rounded disabled:opacity-50  text-white font-medium text-xs"
+      id="btn-get-details">
+      Get Details
+    </button>
+  </div>
+
+  <div class="text-center mt-2">
+    <p id="details-ip"></p>
+    <p id="details-mask"></p>
+    <p id="details-broadcast"></p>
+    <p id="details-flags"></p>
+
+    <p class="mt-6 text-lg font-medium">Represent network</p>
+  </div>
+
+  <div class="flex space-x-2 justify-center text-white font-medium text-xs">
+    <button type="button" class="px-6 py-2.5 bg-blue-600 rounded disabled:opacity-50" id="btn-stream-start">
+      Start stream
+    </button>
+    <button type="button" class="px-6 py-2.5 bg-blue-600 rounded disabled:opacity-50" id="btn-stream-end">
+      End stream
+    </button>
+  </div>
 
   <ul id="ul-stream-response">
-    <li>Responses</li>
+    <li class="text-center mt-4 text-lg font-medium">Responses</li>
   </ul>
 
   <script src="bundle.js"></script>

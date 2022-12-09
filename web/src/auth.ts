@@ -32,6 +32,7 @@ export async function logout() {
                 returnTo: window.location.origin
             }
         });
+        document.getElementById("login-details").innerText = "";
         sessionStorage.clear();
     } catch (err) {
         console.log("Log out failed:", err);
@@ -57,6 +58,9 @@ export async function auth0Init() {
         try {
             await auth0Client.handleRedirectCallback();
 
+            const user = await auth0Client.getUser();
+            document.getElementById("login-details").innerText = `User: ${user.email}`;
+
             const token = await auth0Client.getTokenSilently();
             sessionStorage.setItem("auth0token", token);
 
@@ -65,9 +69,9 @@ export async function auth0Init() {
         } catch (err) {
             console.log("Error parsing redirect:", err);
         }
-
-        window.history.replaceState({}, document.title, "/");
     }
+
+    window.history.replaceState({}, document.title, "/");
 
     setDisabledFlag();
 };
