@@ -7,7 +7,7 @@ require (
 	google.golang.org/grpc v1.51.0
 )
 
-require github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+require github.com/golang-jwt/jwt v3.2.2+incompatible
 
 require (
 	github.com/golang/protobuf v1.5.2 // indirect

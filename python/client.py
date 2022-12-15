@@ -92,7 +92,9 @@ def server_streaming(device_name: str) -> None:
 
 
 if __name__ == "__main__":
+    device = "eth0"
+
     logging.getLogger().setLevel(logging.INFO)
     get_devices()
-    get_details_of_device("en0")
-    # server_streaming("en0")
+    get_details_of_device(device)
+    server_streaming(device)

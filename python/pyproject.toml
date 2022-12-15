@@ -1,12 +1,11 @@
 [tool.poetry]
-name = "python"
+name = "client"
 version = "0.1.0"
 description = ""
 authors = ["s213610"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "3.10"
 grpcio = "1.50.0"
 grpcio-tools = "1.50.0"
 
