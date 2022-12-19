@@ -1,0 +1,22 @@
+version: '3'
+services:
+
+  server:
+    image: golang-server-grpc:latest
+    ports:
+      - "50051:50051"
+
+  web-client:
+    image: web-client-grpc:latest
+    ports:
+      - "3000:3000"
+
+  envoy:
+    image: envoyproxy/envoy-dev:eeab187b21e540dbe47b83d023b94f4682fb1179
+    ports:
+      - "8080:8080"
+    links:
+      - server
+      - web-client
+    volumes:
+      - ./proxy/envoy.yaml:/etc/envoy/envoy.yaml

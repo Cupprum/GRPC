@@ -1,5 +1,6 @@
 # TypeScript
 node_modules
+web/dist/bundle.js
 
 # Python
 __pycache__
