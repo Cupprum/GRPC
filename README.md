@@ -8,8 +8,8 @@ POC of GRPC for educational purposes.
 - Grpc-web version of client - implemented in TypeScript as a SPA (Single Page Application).
 - Envoy - configuration of reverse proxy for grpc-web.
 
-## Run localy
-Use Dockerfiles to figure out how to install and run the actual parts localy.
+## Run locally
+Use Dockerfiles to figure out how to install and run the actual parts locally.
 
 Scripts, which build and run containers are in each folder.
 The root folder also contains `docker-compose` file.
