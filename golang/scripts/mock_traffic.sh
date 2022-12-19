@@ -2,6 +2,6 @@
 
 while true
 do
-    curl http://www.example.com &> /dev/null
+    curl https://www.randomtextgenerator.com &> /dev/null
     sleep 2
 done
